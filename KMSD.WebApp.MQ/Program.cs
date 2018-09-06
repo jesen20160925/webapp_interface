@@ -68,21 +68,21 @@ namespace KMSD.WebApp.MQ
 
                     channel.BasicConsume("task_queue", false, consumer);
 
-                    while (true)
+
+                    consumer.Received += (c, ea) =>
                     {
-                        consumer.Received += (c, ea) => {
-                            var body = ea.Body;
-                            var message = Encoding.UTF8.GetString(body);
+                        var body = ea.Body;
+                        var message = Encoding.UTF8.GetString(body);
 
-                            int dots = message.Split('.').Length - 1;
-                            Thread.Sleep(dots * 1000);
+                        int dots = message.Split('.').Length - 1;
+                        Thread.Sleep(dots * 1000);
 
-                            Console.WriteLine("Received {0}", message);
-                            Console.WriteLine("Done");
+                        Console.WriteLine("Received {0}", message);
+                        Console.WriteLine("Done");
 
-                            channel.BasicAck(ea.DeliveryTag, false); //设置客户端需要回复一个ack确认给服务器
-                        };
-                    }
+                        channel.BasicAck(ea.DeliveryTag, false); //设置客户端需要回复一个ack确认给服务器
+                    };
+
                 }
             }
         }
